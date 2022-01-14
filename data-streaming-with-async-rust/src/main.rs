@@ -6,7 +6,7 @@ use yahoo_finance_api as yahoo;
 #[derive(Parser, Debug)]
 #[clap(
     version = "1.0",
-    author = "Claus Matzinger",
+    author = "James",
     about = "A Manning LiveProject: async Rust"
 )]
 #[clap(author, version, about, long_about = None)]
@@ -159,7 +159,6 @@ impl AsyncStockSignal for WindowedSMA {
         n_window_sma(self.window_size, series)
     }
 }
-
 fn main() -> std::io::Result<()> {
     let opts = Opts::parse();
     let from: DateTime<Utc> = opts.from.parse().expect("Couldn't parse 'from' date");
@@ -177,16 +176,13 @@ fn main() -> std::io::Result<()> {
             let (_, pct_change) = price_diff(&closes).unwrap_or((0.0, 0.0));
             let sma = n_window_sma(30, &closes).unwrap_or_default();
 
+            let period_start = from.to_rfc3339();
+            let change = pct_change * 100.0;
+            let thirty_day_avg = sma.last().unwrap_or(&0.0);
+
             // a simple way to output CSV data
             println!(
-                "{},{},${:.2},{:.2}%,${:.2},${:.2},${:.2}",
-                from.to_rfc3339(),
-                symbol,
-                last_price,
-                pct_change * 100.0,
-                period_min,
-                period_max,
-                sma.last().unwrap_or(&0.0)
+                "{period_start},{symbol},{last_price:.2},{change:.2}%,{period_min:.2},{period_max:.2},{thirty_day_avg:.2}",
             );
         }
     }
