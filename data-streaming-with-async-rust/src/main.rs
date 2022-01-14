@@ -191,7 +191,7 @@ async fn main() -> std::io::Result<()> {
 
             // a simple way to output CSV data
             println!(
-                "{period_start},{symbol},{last_price:.2},{change:.2}%,{period_min:.2},{period_max:.2},{thirty_day_avg:.2}",
+                "{period_start},{symbol},${last_price:.2},{change:.2}%,${period_min:.2},${period_max:.2},${thirty_day_avg:.2}",
             );
         }
     }
